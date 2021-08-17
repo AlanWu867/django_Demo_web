@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Paginator example</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+    <script type='text/javascript' src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type='text/javascript' src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+    <script type='text/javascript' src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<br>
+
+
+<nav class="navbar navbar-light bg-light">
+  <form class="form-inline">
+      {% csrf_token %}
+      <div align="center"  >
+          <input name="SourceIP" class="form-control mr-sm-2"  type="search" placeholder="Source IP" aria-label="Search"  >
+          <button id="submit" class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </div>
+
+  </form>
+</nav>
+
+
+
+<br>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+        <th>Date</th>
+        <th>Time</th>
+        <th>usec</th>
+        <th>SourceIP</th>
+        <th>SourcePort</th>
+        <th>DestinationIP</th>
+        <th>DestinationPort</th>
+        <th>FQDN</th>
+    </tr>
+  </thead>
+  <tbody id="object_list">
+    {% for object_list in object_list %}
+      <tr>
+          <td>{{ object_list.Date }}</td>
+          <td>{{ object_list.Time }}</td>
+          <td>{{ object_list.usec }}</td>
+          <td>{{ object_list.SourceIP }}</td>
+          <td>{{ object_list.SourcePort }}</td>
+          <td>{{ object_list.DestinationIP }}</td>
+          <td>{{ object_list.DestinationPort }}</td>
+          <td>{{ object_list.FQDN }}</td>
+      </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+<div>
+
+
+{% if has_other_pages %}
+  <ul class="pagination justify-content-center">
+    {% if has_previous %}
+      <li class="page-link"><a href="?page={{ previous_page_number }}">&laquo;</a></li>
+    {% else %}
+        <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1">&laquo;</a>
+        </li>
+    {% endif %}
+    {% for i in pagerange %}
+      {% if page == i.page %}
+        <li class="page-item disabled">
+          <a class="page-link" href="#" tabindex="-1">{{ i.page }}</a>
+        </li>
+      {% else %}
+        <li class="page-link"><a href="?page={{ i.page }}&SourceIP={{ i.SourceIP }}">{{ i.page }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if has_next %}
+      <li class="page-link"><a href="?page={{ next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1">&raquo;</a>
+      </li>
+    {% endif %}
+
+  </ul>
+{% endif %}
+
+</div>
+    <script>
+         $('#submit').click(function () {
+            $.ajax({
+                url: '/home/Inquire/',
+                type: 'post',
+            cache: false,
+                data: {
+                    csrfmiddlewaretoken: $("[name='csrfmiddlewaretoken']").val(),
+                    SourceIP: $('[name="SourceIP"]').val(),
+                },
+                success: function (data) {
+                    data = JSON.parse(data);
+                    if (data.status) {
+                        window.location = data.url
+                    }
+                    else {
+                        alert('登入失敗');
+                    }
+                }
+            })
+            return false;
+        })
+    </script>
+</body>
+</html>
+
