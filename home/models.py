@@ -12,27 +12,6 @@ def sqlstart():
         , port='1433'
     )
     cursor = conn.cursor(as_dict=True)
-    # sql="SELECT * FROM data_table"
-    # cursor.execute(sql)
-    # topics =cursor.fetchall()
-    # cursor.close()
-    # conn.close()
-
-# def sqlstart():
-#     global topics
-#     conn = pymssql.connect(
-#         server='127.0.0.1'
-#         , user='Alan'
-#         , password='123456'
-#         , database='foo'
-#         , port='1433'
-#     )
-#     cursor = conn.cursor(as_dict=True)
-#     sql="SELECT * FROM data_table"
-#     cursor.execute(sql)
-#     topics =cursor.fetchall()
-#     cursor.close()
-#     conn.close()
 
 def search(key,val,page):
     if key==None or val==None:
